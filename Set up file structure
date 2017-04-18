@@ -1,0 +1,88 @@
+Set up file structure
+copy in .gitignore
+git init
+
+git add -A //Adds all files
+git commit -m "first commit" 
+git log --oneline //Check everthing is good
+
+node -v // make sure node is installed (initial setup, not for each project).
+
+npm init // initialises project and adds the node_modules folder
+
+npm install gulp --save-dev// install gulp in project.  This adds the package.json file
+
+// For each node package you will be using:
+
+npm install *packgage_name* --save-dev //this puts it into the node modules folder
+
+
+
+gulp packages
+gulp-plumber // Lets you know in command line if something goes wrong with a pipe
+gulp-uglify //minify css
+browser-sync//live reloading
+del //not sure find out
+gulp-rename // rename js files
+gulp-autoprefixer //prefix css
+gulp-compass // not sure
+
+
+Create an empty javascript file called gulpfile.js
+example gulpfile.js
+
+//////////////////////////////////////
+// required
+//////////////////////////////////////
+var gulp = require('gulp'),
+	compass = require('gulp-compass'),
+	rename = require('gulp-rename'),
+	uglify = require('gulp-uglify');
+
+//////////////////////////////////////
+// Scripts Task
+//////////////////////////////////////
+gulp.task('scripts', function() {
+	gulp.src(['app/js/**/*.js', '!app/js/**/*.min.js'])
+	.pipe(rename({suffix:'.min'}))
+	.pipe(uglify())
+	.pipe(gulp.dest('app/js'));
+  
+});
+
+
+/////////////////////////////////////
+// Watch Tasks
+/////////////////////////////////////
+gulp.task('watch', function() {
+	gulp.watch('app/js/**/*.js', ['scripts']);
+	gulp.watch('app/scss/**/*.scss', ['compass']);
+});
+
+/////////////////////////////////////
+// Compass / Sass Tasks
+/////////////////////////////////////
+gulp.task('compass', function() {
+	gulp.src('app/scss/style.scss')
+	.pipe(compass({
+		config_file: './config.rb',
+		css: 'app/css',
+		sass: 'app.scss',
+		require: ['susy']
+	}))
+	.pipe(gulp.dest('app/css/'));
+});
+
+
+// call using gulp scripts
+
+//////////////////////////////////////
+// Default Task
+//////////////////////////////////////
+gulp.task('default', [scripts', 'compass', 'watch']);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//can be called using just "gulp" as it is the default task!
+ interesting to note:
+ 	.pipe(rename({suffix:'.min'})) takes existing filename and appends .min before the file extension
